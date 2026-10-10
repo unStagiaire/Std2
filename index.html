@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Nombres complexes — Maths Expertes</title>
+<style>
+  :root{
+    --bleu:#1a3a6b; --bleu-clair:#2c5aa0; --or:#c9a227;
+    --fond:#f5f7fa; --blanc:#fff; --texte:#1e2430; --gris:#6b7280;
+    --vert:#1f7a4d; --rouge:#b3261e; --bord:#dfe3ea;
+    --rayon:14px; --ombre:0 2px 10px rgba(26,58,107,.08);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--fond); color:var(--texte); line-height:1.65;
+    font-size:17px; padding-bottom:76px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
+  }
+  #watermark{
+    position:fixed; inset:0; pointer-events:none; z-index:9999;
+    display:flex; flex-wrap:wrap; align-content:flex-start; justify-content:center;
+    gap:80px 40px; padding:40px 20px; opacity:.045;
+    font-size:22px; font-weight:700; color:var(--bleu);
+    transform:rotate(-30deg) scale(1.4); transform-origin:center;
+    overflow:hidden; white-space:nowrap;
+  }
+  #watermark span{display:inline-block}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px 30px}
+
+  header.chap{
+    background:linear-gradient(135deg,var(--bleu) 0%,var(--bleu-clair) 100%);
+    color:#fff; padding:22px 16px 20px; margin-bottom:18px;
+  }
+  header.chap .inner{max-width:820px;margin:0 auto}
+  .fil{font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.85;margin:0 0 4px}
+  header.chap h1{margin:0 0 8px;font-size:23px;line-height:1.25;font-weight:800}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+    border-radius:999px;padding:3px 11px;font-size:12px;font-weight:600}
+  .badge.or{background:rgba(201,162,39,.25);border-color:rgba(201,162,39,.55)}
+
+  /* Onglets */
+  .tab-panel{display:none}
+  .tab-panel.active{display:block;animation:fadeIn .22s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tab-bar{
+    position:fixed; bottom:0; left:0; right:0;
+    background:#fff; border-top:2px solid var(--bord);
+    display:flex; z-index:100;
+    box-shadow:0 -4px 16px rgba(26,58,107,.08);
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .tab-bar button{
+    flex:1; background:none; border:none;
+    padding:8px 4px 10px; font-family:inherit; font-size:11px;
+    font-weight:600; color:var(--gris); cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    transition:color .15s; min-height:56px;
+  }
+  .tab-bar button .ico{font-size:22px;line-height:1;transition:transform .15s}
+  .tab-bar button.active{color:var(--bleu);font-weight:800}
+  .tab-bar button.active .ico{transform:scale(1.12)}
+
+  /* Structure */
+  section{margin-bottom:30px}
+  h2{font-size:21px;color:var(--bleu);margin:0 0 14px;
+    padding-bottom:8px;border-bottom:3px solid var(--or);font-weight:800}
+  h3{font-size:17px;color:var(--bleu-clair);margin:20px 0 8px;font-weight:700}
+  p{margin:0 0 12px}
+
+  .carte{background:var(--blanc);border:1px solid var(--bord);border-radius:var(--rayon);
+    padding:18px;margin-bottom:14px;box-shadow:var(--ombre)}
+  .loi{background:#eef3fb;border-left:5px solid var(--bleu-clair);
+    border-radius:0 var(--rayon) var(--rayon) 0;padding:13px 15px;margin:13px 0}
+  .loi strong{color:var(--bleu);display:block;margin-bottom:5px;font-size:15px}
+  .exemple{background:#fdf8e8;border-left:5px solid var(--or);
+    border-radius:0 var(--rayon) var(--rayon) 0;padding:13px 15px;margin:13px 0}
+  .exemple strong{color:#8a6d0f;display:block;margin-bottom:5px;font-size:15px}
+  .retenir{background:#e6f5ec;border-left:5px solid var(--vert);
+    border-radius:0 var(--rayon) var(--rayon) 0;padding:13px 15px;margin:13px 0}
+  .retenir strong{color:var(--vert);display:block;margin-bottom:5px;font-size:15px}
+  .formule{text-align:center;font-size:19px;font-weight:700;color:var(--bleu);
+    margin:13px 0;font-family:"Cambria Math",Cambria,Georgia,serif}
+  .formule small{display:block;font-weight:400;font-size:14px;color:var(--gris);margin-top:4px;font-family:inherit}
+
+  /* QCM */
+  .qcm-setup{text-align:center;padding:24px 16px}
+  .qcm-setup .ico-gros{font-size:48px;margin-bottom:8px}
+  .qcm-setup h2{border:none;text-align:center;margin-bottom:6px;padding:0}
+  .qcm-setup p{color:var(--gris);font-size:15px}
+  .qcm-setup label{display:block;margin:20px 0 8px;font-weight:700;font-size:16px}
+  .qcm-setup input[type="number"]{
+    width:96px;padding:12px;font-size:22px;font-weight:800;text-align:center;
+    border:2px solid var(--bleu-clair);border-radius:11px;font-family:inherit;
+    color:var(--bleu);margin-left:6px;background:#f7f9fc;
+  }
+  .qcm-setup input[type="number"]:focus{outline:none;border-color:var(--or);background:#fff}
+  .qcm-setup .note{font-size:13px;color:var(--gris);margin-top:6px}
+  .btn-principal{
+    display:inline-block;margin-top:22px;background:var(--bleu);color:#fff;
+    border:none;padding:15px 30px;border-radius:11px;
+    font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;min-height:54px;
+  }
+  .btn-principal:active{transform:scale(.97)}
+  .btn-secondaire{
+    display:inline-block;margin-top:12px;background:#fff;color:var(--bleu);
+    border:2px solid var(--bleu);padding:13px 26px;border-radius:11px;
+    font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;min-height:52px;
+  }
+  .btn-secondaire:active{transform:scale(.97)}
+
+  .qcm-run{padding:0}
+  .qcm-progress{font-size:12px;font-weight:800;color:var(--or);
+    text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;text-align:center}
+  .qcm-bar{height:6px;background:#e5e9f0;border-radius:3px;overflow:hidden;margin:0 auto 18px;max-width:280px}
+  .qcm-bar span{display:block;height:100%;background:var(--or);border-radius:3px;transition:width .3s}
+  .qcm-enonce{font-size:18px;font-weight:600;margin-bottom:16px;line-height:1.5}
+  .choix{display:flex;flex-direction:column;gap:10px}
+  .choix button{
+    display:block;width:100%;text-align:left;background:#f7f9fc;
+    border:2px solid var(--bord);border-radius:11px;padding:14px 16px;
+    font-size:16px;font-family:inherit;color:var(--texte);cursor:pointer;
+    min-height:52px;transition:background .15s,border-color .15s;font-weight:500;
+  }
+  .choix button:active{transform:scale(.985)}
+  .choix button.ok{background:#e6f5ec;border-color:var(--vert);color:var(--vert);font-weight:700}
+  .choix button.ko{background:#fdeceb;border-color:var(--rouge);color:var(--rouge);font-weight:700}
+  .choix button:disabled{cursor:default;opacity:1}
+  .corr{display:none;margin-top:14px;padding:13px 15px;border-radius:10px;
+    font-size:15px;line-height:1.55;background:#eef3fb;border-left:4px solid var(--bleu-clair)}
+  .corr.show{display:block}
+  .corr .titre{font-weight:700;color:var(--bleu);display:block;margin-bottom:4px}
+  .corr.bonne{background:#e6f5ec;border-left-color:var(--vert)}
+  .corr.bonne .titre{color:var(--vert)}
+  .corr.mauvaise{background:#fdeceb;border-left-color:var(--rouge)}
+  .corr.mauvaise .titre{color:var(--rouge)}
+  .qcm-actions{display:flex;justify-content:center;margin-top:18px}
+
+  .qcm-finish{text-align:center;padding:24px 16px}
+  .qcm-finish .ico-gros{font-size:56px;margin-bottom:6px}
+  .qcm-finish .score{font-size:44px;font-weight:800;color:var(--bleu);margin:8px 0}
+  .qcm-finish .msg{font-size:16px;color:var(--gris);margin-bottom:8px}
+
+  /* Texte à trous */
+  .trous{background:var(--blanc);border:1px solid var(--bord);border-radius:var(--rayon);
+    padding:18px;box-shadow:var(--ombre)}
+  .trous p{margin:0 0 16px;line-height:1.9}
+  .trous input{
+    border:none;border-bottom:2px solid var(--bleu-clair);
+    background:#f0f4fa;border-radius:6px 6px 0 0;
+    padding:7px 10px;font-size:16px;font-family:inherit;
+    color:var(--bleu);font-weight:700;min-width:100px;
+    text-align:center;transition:background .15s,border-color .15s;
+  }
+  .trous input:focus{outline:none;background:#e4ecf8;border-bottom-color:var(--or)}
+  .trous input.ok{border-bottom-color:var(--vert);background:#e6f5ec;color:var(--vert)}
+  .trous input.ko{border-bottom-color:var(--rouge);background:#fdeceb;color:var(--rouge)}
+  .btn-verif{
+    display:inline-block;margin-top:6px;background:var(--bleu);color:#fff;border:none;
+    padding:14px 26px;border-radius:11px;font-size:16px;font-weight:700;
+    font-family:inherit;cursor:pointer;min-height:52px;
+  }
+  .btn-verif:active{transform:scale(.97)}
+  .resultat-trous{margin-top:14px;font-weight:700;font-size:15px;text-align:center}
+
+  /* Exercices DST */
+  .dst{background:var(--blanc);border:1px solid var(--bord);border-radius:var(--rayon);
+    padding:18px;margin-bottom:14px;box-shadow:var(--ombre)}
+  .dst .titre-ex{font-weight:700;color:var(--bleu);font-size:16px;margin-bottom:10px}
+  .dst .enonce-ex{margin-bottom:14px}
+  .btn-corr{
+    background:#fdf8e8;color:#8a6d0f;border:2px solid var(--or);
+    padding:12px 22px;border-radius:11px;font-size:15px;font-weight:700;
+    font-family:inherit;cursor:pointer;min-height:48px;
+  }
+  .btn-corr:active{transform:scale(.97)}
+  .sol{display:none;margin-top:14px;padding:16px;background:#f7f9fc;
+    border:1px dashed var(--bleu-clair);border-radius:11px;font-size:15px;line-height:1.7}
+  .sol.show{display:block}
+  .sol .etape{margin:8px 0}
+  .sol .etape b{color:var(--bleu)}
+
+  footer.chap{text-align:center;padding:30px 16px;color:var(--gris);
+    font-size:14px;border-top:1px solid var(--bord);margin-top:20px}
+  footer.chap strong{color:var(--bleu)}
+
+  .badge-demo{display:none;background:var(--or);color:#fff;font-size:12px;
+    font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.04em}
+  body.demo .badge-demo{display:inline-block}
+  .bandeau-demo{display:none;background:#fff8e1;border:1px solid var(--or);
+    color:#8a6d0f;border-radius:var(--rayon);padding:11px 16px;margin:0 16px 16px;
+    font-size:14px;text-align:center;font-weight:600;max-width:820px}
+  body.demo .bandeau-demo{display:block;margin-left:auto;margin-right:auto}
+
+  @media (max-width:480px){
+    body{font-size:16px}
+    header.chap h1{font-size:21px}
+    h2{font-size:19px}
+    .formule{font-size:17px}
+    .qcm-enonce{font-size:17px}
+  }
+</style>
+</head>
+<body data-chapter-id="maths-expertes-nombres-complexes" data-chapter-title="Nombres complexes">
+
+<div id="watermark" aria-hidden="true"></div>
+
+<div class="bandeau-demo">🔓 Chapitre de démonstration — vos résultats ne sont pas enregistrés.</div>
+
+<header class="chap">
+  <div class="inner">
+    <p class="fil">Terminale — Maths Expertes</p>
+    <h1>Les nombres complexes</h1>
+    <div class="meta">
+      <span class="badge">Terminale</span>
+      <span class="badge">Maths Expertes</span>
+      <span class="badge or">Chapitre vitrine</span>
+      <span class="badge badge-demo">DÉMO</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== ONGLET COURS ===================== -->
+<main class="wrap">
+
+<div id="panel-cours" class="tab-panel active">
+
+  <nav class="sommaire" style="background:#fff;border:1px solid var(--bord);border-radius:14px;padding:14px 18px;margin-bottom:22px;box-shadow:var(--ombre)">
+    <p style="margin:0 0 8px;font-weight:700;font-size:15px;color:var(--bleu)">📑 Plan du cours</p>
+    <ol style="margin:0;padding-left:20px;font-size:15px">
+      <li><a href="#intro" style="color:var(--bleu-clair);text-decoration:none">Introduction</a></li>
+      <li><a href="#forme-alg" style="color:var(--bleu-clair);text-decoration:none">Forme algébrique</a></li>
+      <li><a href="#conjugue" style="color:var(--bleu-clair);text-decoration:none">Conjugué</a></li>
+      <li><a href="#module" style="color:var(--bleu-clair);text-decoration:none">Module et argument</a></li>
+      <li><a href="#geo" style="color:var(--bleu-clair);text-decoration:none">Représentation géométrique</a></li>
+      <li><a href="#exp" style="color:var(--bleu-clair);text-decoration:none">Forme exponentielle</a></li>
+      <li><a href="#equa" style="color:var(--bleu-clair);text-decoration:none">Équations du second degré</a></li>
+    </ol>
+  </nav>
+
+  <section id="intro">
+    <h2>1. Introduction : pourquoi les nombres complexes ?</h2>
+    <div class="carte">
+      <p>L'équation <b>x² + 1 = 0</b> n'a <b>aucune solution réelle</b> : un carré est toujours positif ou nul. Pourtant, de nombreuses situations (électricité, mécanique, traitement du signal) ont besoin de solutions à cette équation.</p>
+      <p>On introduit donc un <b>nouveau nombre</b>, noté <em>i</em>, tel que :</p>
+      <div class="formule">i² = −1</div>
+      <p>L'ensemble des nombres complexes, noté <b>ℂ</b>, prolonge l'ensemble des réels ℝ. Tout réel est un complexe, mais l'inverse est faux.</p>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        i est un nombre imaginaire pur, de carré −1. Le mot « imaginaire » ne signifie pas irréel : c'est un outil mathématique parfaitement rigoureux.
+      </div>
+      <div class="loi">
+        <strong>Puissances de i</strong>
+        <div class="formule">i⁰ = 1 • i¹ = i • i² = −1 • i³ = −i • i⁴ = 1</div>
+        Le cycle se répète tous les 4 : pour calculer iⁿ, on regarde le reste de n dans la division par 4.
+      </div>
+    </div>
+  </section>
+
+  <section id="forme-alg">
+    <h2>2. Forme algébrique</h2>
+    <div class="carte">
+      <div class="loi">
+        <strong>Définition</strong>
+        Tout nombre complexe <em>z</em> s'écrit de manière <b>unique</b> sous la forme
+        <div class="formule">z = a + ib</div>
+        où <em>a</em> et <em>b</em> sont des réels. <em>a</em> est la <b>partie réelle</b> (Re(z)), <em>b</em> est la <b>partie imaginaire</b> (Im(z)).
+      </div>
+      <div class="loi">
+        <strong>Égalité</strong>
+        <div class="formule">a + ib = a' + ib' ⟺ a = a' et b = b'</div>
+        Deux complexes sont égaux si et seulement si leurs parties réelles ET imaginaires sont égales.
+      </div>
+      <h3>Addition et multiplication</h3>
+      <p>On calcule comme avec des expressions littérales, puis on remplace <em>i²</em> par −1.</p>
+      <div class="exemple">
+        <strong>Exemple 1</strong>
+        (2 + 3i) + (1 − 5i) = (2+1) + (3−5)i = <b>3 − 2i</b>
+      </div>
+      <div class="exemple">
+        <strong>Exemple 2</strong>
+        (2 + 3i)(1 − i) = 2 − 2i + 3i − 3i² = 2 + i + 3 = <b>5 + i</b>
+      </div>
+      <div class="loi">
+        <strong>Inverse et quotient</strong>
+        Pour z = a + ib ≠ 0 :
+        <div class="formule">1/z = (a − ib) / (a² + b²)</div>
+        Pour un quotient z/z', on multiplie numérateur et dénominateur par le conjugué de z'.
+      </div>
+      <div class="exemple">
+        <strong>Exemple 3</strong>
+        1/(1 + i) = (1 − i)/((1+i)(1−i)) = (1 − i)/2 = <b>½ − ½ i</b>
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        Pour rendre réel le dénominateur d'un quotient, on multiplie par le <b>conjugué</b>. C'est le réflexe numéro 1 des calculs dans ℂ.
+      </div>
+    </div>
+  </section>
+
+  <section id="conjugue">
+    <h2>3. Conjugué d'un nombre complexe</h2>
+    <div class="carte">
+      <div class="loi">
+        <strong>Définition</strong>
+        Le conjugué de z = a + ib est <span style="font-size:18px;font-weight:700;color:var(--bleu)">z̄ = a − ib</span>.
+        On change le signe de la partie imaginaire.
+      </div>
+      <div class="loi">
+        <strong>Propriétés</strong>
+        <div class="formule">z + z̄ = 2 Re(z) &nbsp;&nbsp;•&nbsp;&nbsp; z − z̄ = 2i Im(z)</div>
+        <div class="formule">z · z̄ = a² + b² = |z|²</div>
+        <div class="formule"><span style="text-decoration:overline">z + z'</span> = z̄ + z̄' &nbsp;&nbsp;•&nbsp;&nbsp; <span style="text-decoration:overline">z · z'</span> = z̄ · z̄'</div>
+        <div class="formule"><span style="text-decoration:overline">(z / z')</span> = z̄ / z̄' &nbsp;&nbsp;•&nbsp;&nbsp; <span style="text-decoration:overline">z̄</span> = z</div>
+      </div>
+      <div class="exemple">
+        <strong>Exemple</strong>
+        z = 3 − 2i. Alors z̄ = 3 + 2i et z·z̄ = 3² + (−2)² = <b>13</b>.
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        z est réel ⟺ z̄ = z. z est imaginaire pur ⟺ z̄ = −z.
+      </div>
+    </div>
+  </section>
+
+  <section id="module">
+    <h2>4. Module et argument</h2>
+    <div class="carte">
+      <div class="loi">
+        <strong>Module</strong>
+        Le module de z = a + ib est
+        <div class="formule">|z| = √(a² + b²)</div>
+        C'est la distance de l'origine au point d'affixe z. |z| ≥ 0, et |z| = 0 ⟺ z = 0.
+      </div>
+      <div class="loi">
+        <strong>Propriétés du module</strong>
+        <div class="formule">|z · z'| = |z| · |z'| &nbsp;&nbsp;•&nbsp;&nbsp; |z / z'| = |z| / |z'| (z' ≠ 0)</div>
+        <div class="formule">|z|² = z · z̄ &nbsp;&nbsp;•&nbsp;&nbsp; |zⁿ| = |z|ⁿ</div>
+        <div class="formule">|z + z'| ≤ |z| + |z'| &nbsp; (inégalité triangulaire)</div>
+      </div>
+      <div class="loi">
+        <strong>Argument</strong>
+        Pour z ≠ 0, l'argument de z, noté arg(z), est l'angle θ tel que :
+        <div class="formule">a = |z| · cos θ &nbsp;&nbsp;et&nbsp;&nbsp; b = |z| · sin θ</div>
+        L'argument est défini <b>modulo 2π</b>.
+      </div>
+      <div class="loi">
+        <strong>Propriétés de l'argument</strong>
+        <div class="formule">arg(z · z') = arg(z) + arg(z') &nbsp; [2π]</div>
+        <div class="formule">arg(z / z') = arg(z) − arg(z') &nbsp; [2π]</div>
+        <div class="formule">arg(zⁿ) = n · arg(z) &nbsp; [2π]</div>
+      </div>
+      <div class="exemple">
+        <strong>Exemple 1</strong>
+        z = 1 + i. |z| = √(1² + 1²) = <b>√2</b>. arg(z) = <b>π/4</b> car cos(π/4) = sin(π/4) = √2/2.
+      </div>
+      <div class="exemple">
+        <strong>Exemple 2</strong>
+        z = 1 + i√3. |z| = √(1 + 3) = <b>2</b>. arg(z) = <b>π/3</b> car cos(π/3) = 1/2 et sin(π/3) = √3/2.
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        Pour trouver un argument, on factorise par le module et on reconnaît un cosinus et un sinus remarquables. Tableau à connaître : 0, π/6, π/4, π/3, π/2, π.
+      </div>
+    </div>
+  </section>
+
+  <section id="geo">
+    <h2>5. Représentation géométrique</h2>
+    <div class="carte">
+      <p>Dans le plan muni d'un repère orthonormé (O, u⃗, v⃗), à tout complexe z = a + ib on associe le <b>point M(a ; b)</b>, image de z. z est l'<b>affixe</b> de M.</p>
+      <div class="loi">
+        <strong>Traductions géométriques</strong>
+        <div class="formule">|z − z'| = distance entre les points d'affixes z et z'</div>
+        <div class="formule">arg(z − z') = angle orienté entre l'axe des réels et le vecteur d'affixe z − z'</div>
+      </div>
+      <div class="exemple">
+        <strong>Exemple 1</strong>
+        |z − 1| = 2 : ensemble des points à distance 2 de A(1 ; 0) → <b>cercle</b> de centre A et de rayon 2.
+      </div>
+      <div class="exemple">
+        <strong>Exemple 2</strong>
+        |z − 1| = |z + i| : points équidistants de A(1 ; 0) et B(0 ; −1) → <b>médiatrice</b> de [AB].
+      </div>
+      <div class="exemple">
+        <strong>Exemple 3</strong>
+        Re(z) = 2 : droite verticale d'abscisse 2. Im(z) = 1 : droite horizontale d'ordonnée 1.
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        |z − z₀| = r → cercle de centre z₀ et de rayon r.
+        |z − z₀| = |z − z₁| → médiatrice du segment [z₀ ; z₁].
+      </div>
+    </div>
+  </section>
+
+  <section id="exp">
+    <h2>6. Forme exponentielle</h2>
+    <div class="carte">
+      <div class="loi">
+        <strong>Forme trigonométrique et exponentielle</strong>
+        Pour z ≠ 0, avec r = |z| et θ = arg(z) :
+        <div class="formule">z = r(cos θ + i sin θ) = r · e<sup>iθ</sup></div>
+      </div>
+      <div class="loi">
+        <strong>Formules d'Euler</strong>
+        <div class="formule">cos θ = (e<sup>iθ</sup> + e<sup>−iθ</sup>) / 2</div>
+        <div class="formule">sin θ = (e<sup>iθ</sup> − e<sup>−iθ</sup>) / (2i)</div>
+      </div>
+      <div class="loi">
+        <strong>Formule de Moivre</strong>
+        <div class="formule">(e<sup>iθ</sup>)ⁿ = e<sup>inθ</sup></div>
+        <div class="formule">(cos θ + i sin θ)ⁿ = cos(nθ) + i sin(nθ)</div>
+      </div>
+      <div class="exemple">
+        <strong>Exemple 1</strong>
+        1 + i = √2 · e<sup>iπ/4</sup>. Donc (1+i)⁴ = (√2)⁴ · e<sup>iπ</sup> = 4 × (−1) = <b>−4</b>.
+      </div>
+      <div class="exemple">
+        <strong>Exemple 2 — Formule d'Euler</strong>
+        e<sup>iπ</sup> = cos π + i sin π = −1. D'où l'identité d'Euler :
+        <div class="formule">e<sup>iπ</sup> + 1 = 0</div>
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        La forme exponentielle simplifie les produits, quotients et puissances. C'est l'outil privilégié pour les calculs avec de grands exposants.
+      </div>
+    </div>
+  </section>
+
+  <section id="equa">
+    <h2>7. Équations du second degré</h2>
+    <div class="carte">
+      <div class="loi">
+        <strong>Théorème</strong>
+        Soit az² + bz + c = 0 avec a ≠ 0 et a, b, c réels. On pose Δ = b² − 4ac.
+        <ul style="margin:8px 0 0;padding-left:22px">
+          <li>Si Δ &gt; 0 : deux solutions réelles (−b ± √Δ) / (2a)</li>
+          <li>Si Δ = 0 : une solution réelle −b / (2a)</li>
+          <li>Si Δ &lt; 0 : deux solutions complexes conjuguées (−b ± i√(−Δ)) / (2a)</li>
+        </ul>
+      </div>
+      <div class="exemple">
+        <strong>Exemple 1</strong>
+        z² + 2z + 5 = 0. Δ = 4 − 20 = −16 = 16 i². Solutions : z = (−2 ± 4i)/2 = <b>−1 ± 2i</b>.
+      </div>
+      <div class="exemple">
+        <strong>Exemple 2</strong>
+        z² − 4z + 13 = 0. Δ = 16 − 52 = −36. Solutions : z = (4 ± 6i)/2 = <b>2 ± 3i</b>.
+      </div>
+      <div class="loi">
+        <strong>Propriété importante</strong>
+        Si z₀ est solution d'une équation à coefficients réels, alors son conjugué z̄₀ est aussi solution.
+      </div>
+      <div class="retenir">
+        <strong>À retenir</strong>
+        Dans ℂ, toute équation du second degré admet <b>toujours</b> des solutions (au moins une, au plus deux distinctes).
+      </div>
+    </div>
+  </section>
+
+</div><!-- /panel-cours -->
+
+<!-- ===================== ONGLET QCM ===================== -->
+<div id="panel-qcm" class="tab-panel">
+
+  <div id="qcm-setup" class="qcm-setup">
+    <div class="ico-gros">🎯</div>
+    <h2>QCM personnalisé</h2>
+    <p>Teste-toi sur les nombres complexes ! Les questions sont tirées au hasard parmi <b>100 questions</b>, sans répétition.</p>
+    <label for="qcm-nb">Nombre de questions (1 à 25) :</label>
+    <input type="number" id="qcm-nb" min="1" max="25" value="10" inputmode="numeric">
+    <p class="note">Une question s'affiche à la fois. Tu dois répondre avant de passer à la suivante.</p>
+    <br>
+    <button class="btn-principal" id="qcm-start">Commencer le QCM</button>
+  </div>
+
+  <div id="qcm-run" class="qcm-run" style="display:none">
+    <div class="qcm-progress" id="qcm-progress">Question 1 / 10</div>
+    <div class="qcm-bar"><span id="qcm-bar-fill" style="width:0%"></span></div>
+    <div class="qcm-enonce" id="qcm-enonce"></div>
+    <div class="choix" id="qcm-choix"></div>
+    <div class="corr" id="qcm-correction"></div>
+    <div class="qcm-actions">
+      <button class="btn-principal" id="qcm-next" style="display:none">Question suivante</button>
+    </div>
+  </div>
+
+  <div id="qcm-finish" class="qcm-finish" style="display:none">
+    <div class="ico-gros" id="qcm-finish-ico">🏆</div>
+    <h2 style="border:none;text-align:center;padding:0">QCM terminé !</h2>
+    <div class="score" id="qcm-score">0 / 10</div>
+    <p class="msg" id="qcm-msg"></p>
+    <button class="btn-secondaire" id="qcm-restart">Refaire un QCM</button>
+  </div>
+
+</div><!-- /panel-qcm -->
+
+<!-- ===================== ONGLET TEXTE À TROUS ===================== -->
+<div id="panel-trous" class="tab-panel">
+  <section>
+    <h2>Texte à trous</h2>
+    <p style="font-size:15px;color:var(--gris)">Complète les phrases avec le mot ou le symbole qui convient, puis clique sur « Vérifier ».</p>
+    <div class="trous">
+      <p>1. Le nombre complexe <em>i</em> vérifie <input type="text" data-rep="i²=-1|i^2=-1|-1|(-1)|i² = -1" placeholder="..."> .</p>
+      <p>2. La partie réelle de z = 3 − 5i est <input type="text" data-rep="3" placeholder="..."> et sa partie imaginaire est <input type="text" data-rep="-5|- 5" placeholder="..."> .</p>
+      <p>3. Le conjugué de 2 + 7i est <input type="text" data-rep="2-7i|2 - 7i" placeholder="..."> .</p>
+      <p>4. Le module de 3 + 4i vaut <input type="text" data-rep="5" placeholder="..."> .</p>
+      <p>5. Pour z ≠ 0, on écrit z = r·e<sup>iθ</sup> où r est le <input type="text" data-rep="module" placeholder="..."> et θ est l'<input type="text" data-rep="argument" placeholder="..."> .</p>
+      <p>6. i³ vaut <input type="text" data-rep="-i|−i" placeholder="..."> .</p>
+      <p>7. Le conjugué de 5 − 2i est <input type="text" data-rep="5+2i|5 + 2i" placeholder="..."> .</p>
+      <p>8. arg(i) = <input type="text" data-rep="π/2|pi/2|π / 2" placeholder="..."> .</p>
+      <p>9. |1 + i| = <input type="text" data-rep="√2|racine(2)|racine2|sqrt(2)" placeholder="..."> .</p>
+      <p>10. z · z̄ = <input type="text" data-rep="|z|²|module²|module^2|module carré|z²" placeholder="..."> .</p>
+      <button class="btn-verif" id="verif-trous">Vérifier mes réponses</button>
+      <div class="resultat-trous" id="res-trous"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== ONGLET EXERCICES ===================== -->
+<div id="panel-exos" class="tab-panel">
+  <section>
+    <h2>Exercices type DST</h2>
+    <p style="font-size:15px;color:var(--gris)">Fais l'exercice sur feuille, puis affiche la correction pour te vérifier.</p>
+
+    <div class="dst">
+      <div class="titre-ex">Exercice 1 — Calculs dans ℂ</div>
+      <div class="enonce-ex">
+        On pose z₁ = 2 + 3i et z₂ = 1 − i.<br>
+        Calculer sous forme algébrique : <b>a)</b> z₁ + z₂ &nbsp; <b>b)</b> z₁·z₂ &nbsp; <b>c)</b> z₁/z₂ &nbsp; <b>d)</b> |z₁|.
+      </div>
+      <button class="btn-corr" data-cible="sol1">Afficher la correction</button>
+      <div class="sol" id="sol1">
+        <div class="etape"><b>a)</b> z₁ + z₂ = (2 + 3i) + (1 − i) = <strong>3 + 2i</strong>.</div>
+        <div class="etape"><b>b)</b> z₁·z₂ = (2 + 3i)(1 − i) = 2 − 2i + 3i − 3i² = 2 + i + 3 = <strong>5 + i</strong>.</div>
+        <div class="etape"><b>c)</b> z₁/z₂ = (2 + 3i)/(1 − i) = (2 + 3i)(1 + i)/2 = (2 + 2i + 3i + 3i²)/2 = (−1 + 5i)/2 = <strong>−½ + (5/2)i</strong>.</div>
+        <div class="etape"><b>d)</b> |z₁| = √(2² + 3²) = √(4 + 9) = <strong>√13</strong>.</div>
+      </div>
+    </div>
+
+    <div class="dst">
+      <div class="titre-ex">Exercice 2 — Équation du second degré</div>
+      <div class="enonce-ex">Résoudre dans ℂ : <b>z² − 4z + 13 = 0</b>.</div>
+      <button class="btn-corr" data-cible="sol2">Afficher la correction</button>
+      <div class="sol" id="sol2">
+        <div class="etape">Δ = (−4)² − 4×1×13 = 16 − 52 = <strong>−36</strong>.</div>
+        <div class="etape">Δ &lt; 0, donc les solutions sont complexes conjuguées :</div>
+        <div class="etape">z = (4 ± i√36)/2 = (4 ± 6i)/2 = <strong>2 ± 3i</strong>.</div>
+      </div>
+    </div>
+
+    <div class="dst">
+      <div class="titre-ex">Exercice 3 — Forme exponentielle et puissance</div>
+      <div class="enonce-ex">
+        On pose z = 1 + i√3.<br>
+        <b>1)</b> Calculer le module et un argument de z.<br>
+        <b>2)</b> Écrire z sous forme exponentielle.<br>
+        <b>3)</b> En déduire z⁶.
+      </div>
+      <button class="btn-corr" data-cible="sol3">Afficher la correction</button>
+      <div class="sol" id="sol3">
+        <div class="etape"><b>1)</b> |z| = √(1² + (√3)²) = √4 = <strong>2</strong>.</div>
+        <div class="etape">cos θ = 1/2 et sin θ = √3/2, donc θ = <strong>π/3</strong> [2π].</div>
+        <div class="etape"><b>2)</b> z = <strong>2 · e<sup>iπ/3</sup></strong>.</div>
+        <div class="etape"><b>3)</b> z⁶ = (2 e<sup>iπ/3</sup>)⁶ = 2⁶ · e<sup>i·6π/3</sup> = 64 · e<sup>i2π</sup> = 64 × 1 = <strong>64</strong>.</div>
+      </div>
+    </div>
+
+    <div class="dst">
+      <div class="titre-ex">Exercice 4 — Géométrie</div>
+      <div class="enonce-ex">
+        Déterminer et représenter l'ensemble des points M d'affixe z tels que <b>|z − 1 + i| = 2</b>.
+      </div>
+      <button class="btn-corr" data-cible="sol4">Afficher la correction</button>
+      <div class="sol" id="sol4">
+        <div class="etape">|z − (1 − i)| = 2 : ensemble des points à distance 2 du point A d'affixe 1 − i.</div>
+        <div class="etape">C'est le <strong>cercle de centre A(1 ; −1) et de rayon 2</strong>.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<footer class="chap">
+  <p><strong>Fin du chapitre — Nombres complexes</strong></p>
+  <p>Terminale • Maths Expertes • Chapitre vitrine</p>
+</footer>
+
+<!-- ===================== BARRE D'ONGLETS ===================== -->
+<nav class="tab-bar" role="tablist">
+  <button type="button" class="active" data-tab="cours" role="tab">
+    <span class="ico">📖</span><span>Cours</span>
+  </button>
+  <button type="button" data-tab="qcm" role="tab">
+    <span class="ico">✏️</span><span>QCM</span>
+  </button>
+  <button type="button" data-tab="trous" role="tab">
+    <span class="ico">📝</span><span>À trous</span>
+  </button>
+  <button type="button" data-tab="exos" role="tab">
+    <span class="ico">🎯</span><span>Exercices</span>
+  </button>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     BANQUE DE 100 QUESTIONS — QCM (5.1 / 7.2 / 13.2)
+     Format : {q, choix[4], bonne (index), corr}
+     ============================================================ */
+  var QCM_POOL = [
+    // ----- Définitions et bases (1-10)
+    {q:"Que vaut i² ?", choix:["1","−1","i","−i"], bonne:1, corr:"Par définition, i² = −1."},
+    {q:"Que vaut i³ ?", choix:["i","−i","1","−1"], bonne:1, corr:"i³ = i² × i = −1 × i = −i."},
+    {q:"Que vaut i⁴ ?", choix:["i","−i","1","−1"], bonne:2, corr:"i⁴ = (i²)² = (−1)² = 1."},
+    {q:"Que vaut i⁵ ?", choix:["i","−i","1","−1"], bonne:0, corr:"i⁵ = i⁴ × i = 1 × i = i."},
+    {q:"Quel est l'ensemble des nombres complexes ?", choix:["ℝ","ℕ","ℂ","ℤ"], bonne:2, corr:"L'ensemble des nombres complexes se note ℂ."},
+    {q:"Quelle est la forme algébrique d'un complexe ?", choix:["a + ib","a × b","a / b","a − b"], bonne:0, corr:"Tout complexe s'écrit de façon unique z = a + ib avec a, b réels."},
+    {q:"Dans z = a + ib, comment appelle-t-on a ?", choix:["Partie imaginaire","Partie réelle","Module","Argument"], bonne:1, corr:"a est la partie réelle, notée Re(z)."},
+    {q:"Dans z = a + ib, comment appelle-t-on b ?", choix:["Partie réelle","Module","Partie imaginaire","Argument"], bonne:2, corr:"b est la partie imaginaire, notée Im(z)."},
+    {q:"Le nombre i est un nombre :", choix:["réel","imaginaire pur","entier","rationnel"], bonne:1, corr:"i a une partie réelle nulle : c'est un imaginaire pur."},
+    {q:"Le nombre 0 est-il complexe ?", choix:["Oui","Non","Seulement écrit 0i","Impossible à dire"], bonne:0, corr:"0 = 0 + 0i est bien un nombre complexe."},
+
+    // ----- Partie réelle / imaginaire (11-20)
+    {q:"Que vaut Re(3 + 4i) ?", choix:["3","4","7","−3"], bonne:0, corr:"Re(3 + 4i) = 3 (la partie sans i)."},
+    {q:"Que vaut Im(3 + 4i) ?", choix:["3","4","7","−4"], bonne:1, corr:"Im(3 + 4i) = 4 (le coefficient de i)."},
+    {q:"Que vaut Re(−2 + 5i) ?", choix:["−2","5","2","−5"], bonne:0, corr:"Re(−2 + 5i) = −2."},
+    {q:"Que vaut Im(−2 + 5i) ?", choix:["−2","5","2","−5"], bonne:1, corr:"Im(−2 + 5i) = 5."},
+    {q:"Que vaut Re(7i) ?", choix:["7","0","1","−7"], bonne:1, corr:"7i = 0 + 7i, donc Re(7i) = 0."},
+    {q:"Que vaut Im(7i) ?", choix:["7","0","1","−7"], bonne:0, corr:"7i = 0 + 7i, donc Im(7i) = 7."},
+    {q:"Que vaut Re(5) ?", choix:["5","0","1","−5"], bonne:0, corr:"5 = 5 + 0i, donc Re(5) = 5."},
+    {q:"Que vaut Im(5) ?", choix:["5","0","1","−5"], bonne:1, corr:"5 = 5 + 0i, donc Im(5) = 0."},
+    {q:"Que vaut Re(3 − 2i) ?", choix:["3","−2","2","−3"], bonne:0, corr:"Re(3 − 2i) = 3."},
+    {q:"Que vaut Im(3 − 2i) ?", choix:["3","−2","2","−3"], bonne:1, corr:"Im(3 − 2i) = −2."},
+
+    // ----- Conjugué (21-30)
+    {q:"Quel est le conjugué de 2 + 3i ?", choix:["2 − 3i","−2 + 3i","−2 − 3i","2 + 3i"], bonne:0, corr:"On change le signe de la partie imaginaire : 2 − 3i."},
+    {q:"Quel est le conjugué de −1 + 4i ?", choix:["−1 − 4i","1 + 4i","1 − 4i","−1 + 4i"], bonne:0, corr:"Conjugué de −1 + 4i = −1 − 4i."},
+    {q:"Quel est le conjugué de 5 − 2i ?", choix:["5 + 2i","−5 − 2i","−5 + 2i","5 − 2i"], bonne:0, corr:"Conjugué de 5 − 2i = 5 + 2i."},
+    {q:"Quel est le conjugué de 3i ?", choix:["−3i","3i","3","−3"], bonne:0, corr:"3i = 0 + 3i, donc son conjugué est 0 − 3i = −3i."},
+    {q:"Quel est le conjugué de 7 ?", choix:["7","−7","7i","−7i"], bonne:0, corr:"7 est réel, il est son propre conjugué."},
+    {q:"Que vaut z · z̄ ?", choix:["|z|","|z|²","2|z|","0"], bonne:1, corr:"z · z̄ = a² + b² = |z|²."},
+    {q:"Que vaut z + z̄ ?", choix:["2 Re(z)","2 Im(z)","2i Re(z)","0"], bonne:0, corr:"(a + ib) + (a − ib) = 2a = 2 Re(z)."},
+    {q:"Que vaut z − z̄ ?", choix:["2 Re(z)","2i Im(z)","2 Im(z)","0"], bonne:1, corr:"(a + ib) − (a − ib) = 2ib = 2i Im(z)."},
+    {q:"Quel est le conjugué de i ?", choix:["−i","i","1","−1"], bonne:0, corr:"i = 0 + i, donc son conjugué est −i."},
+    {q:"Que vaut le conjugué du conjugué de z ?", choix:["z","−z","z̄","0"], bonne:0, corr:"Le conjugué du conjugué redonne z : <span style='text-decoration:overline'>z̄</span> = z."},
+
+    // ----- Module (31-40)
+    {q:"Que vaut |3 + 4i| ?", choix:["7","5","√7","25"], bonne:1, corr:"|z| = √(3² + 4²) = √25 = 5."},
+    {q:"Que vaut |1 + i| ?", choix:["1","√2","2","2i"], bonne:1, corr:"|1 + i| = √(1² + 1²) = √2."},
+    {q:"Que vaut |5| ?", choix:["5","−5","0","25"], bonne:0, corr:"|5| = 5, le module d'un réel positif est lui-même."},
+    {q:"Que vaut |3i| ?", choix:["3","−3","9","√3"], bonne:0, corr:"|3i| = √(0² + 3²) = 3."},
+    {q:"Que vaut |z|² ?", choix:["z²","z · z̄","z + z̄","2z"], bonne:1, corr:"|z|² = z · z̄ = a² + b²."},
+    {q:"Que vaut |z · z'| ?", choix:["|z| + |z'|","|z| · |z'|","|z| / |z'|","|z + z'|"], bonne:1, corr:"Le module est multiplicatif : |z · z'| = |z| · |z'|."},
+    {q:"Que vaut |z / z'| (z' ≠ 0) ?", choix:["|z| · |z'|","|z| / |z'|","|z| − |z'|","|z + z'|"], bonne:1, corr:"|z / z'| = |z| / |z'|."},
+    {q:"Que vaut |−4| ?", choix:["4","−4","16","2"], bonne:0, corr:"Le module est toujours positif : |−4| = 4."},
+    {q:"Que vaut |2 − 2i| ?", choix:["2","2√2","4","√2"], bonne:1, corr:"|2 − 2i| = √(4 + 4) = √8 = 2√2."},
+    {q:"Que vaut |1 + i√3| ?", choix:["1","2","√3","3"], bonne:1, corr:"|1 + i√3| = √(1 + 3) = √4 = 2."},
+
+    // ----- Argument (41-50)
+    {q:"Quel est un argument de 1 ?", choix:["0","π/2","π","−π/2"], bonne:0, corr:"1 = 1 · e<sup>i0</sup>, donc arg(1) = 0."},
+    {q:"Quel est un argument de i ?", choix:["0","π/2","π","−π/2"], bonne:1, corr:"i = e<sup>iπ/2</sup>, donc arg(i) = π/2."},
+    {q:"Quel est un argument de −1 ?", choix:["0","π/2","π","−π/2"], bonne:2, corr:"−1 = e<sup>iπ</sup>, donc arg(−1) = π."},
+    {q:"Quel est un argument de −i ?", choix:["0","π/2","π","−π/2"], bonne:3, corr:"−i = e<sup>−iπ/2</sup>, donc arg(−i) = −π/2."},
+    {q:"Quel est un argument de 1 + i ?", choix:["π/6","π/4","π/3","π/2"], bonne:1, corr:"1 + i = √2 e<sup>iπ/4</sup>, donc arg = π/4."},
+    {q:"Quel est un argument de 1 + i√3 ?", choix:["π/6","π/4","π/3","π/2"], bonne:2, corr:"1 + i√3 = 2 e<sup>iπ/3</sup>, donc arg = π/3."},
+    {q:"Quel est un argument de √3 + i ?", choix:["π/6","π/4","π/3","π/2"], bonne:0, corr:"√3 + i = 2 e<sup>iπ/6</sup>, donc arg = π/6."},
+    {q:"Quel est un argument de 2i ?", choix:["0","π/2","π","−π/2"], bonne:1, corr:"2i = 2 e<sup>iπ/2</sup>, donc arg = π/2."},
+    {q:"Quel est un argument de −2 ?", choix:["0","π/2","π","−π/2"], bonne:2, corr:"−2 = 2 e<sup>iπ</sup>, donc arg = π."},
+    {q:"Que vaut arg(z · z') ?", choix:["arg(z) + arg(z')","arg(z) − arg(z')","arg(z) × arg(z')","arg(z) / arg(z')"], bonne:0, corr:"L'argument est additif : arg(z · z') = arg(z) + arg(z') [2π]."},
+
+    // ----- Forme exponentielle (51-60)
+    {q:"Quelle est la forme exponentielle de 1 + i ?", choix:["√2 e<sup>iπ/4</sup>","2 e<sup>iπ/4</sup>","√2 e<sup>iπ/2</sup>","e<sup>iπ/4</sup>"], bonne:0, corr:"|1 + i| = √2 et arg = π/4, donc 1 + i = √2 e<sup>iπ/4</sup>."},
+    {q:"Quelle est la forme exponentielle de i ?", choix:["e<sup>iπ</sup>","e<sup>iπ/2</sup>","e<sup>i0</sup>","e<sup>−iπ/2</sup>"], bonne:1, corr:"i = e<sup>iπ/2</sup>."},
+    {q:"Quelle est la forme exponentielle de −1 ?", choix:["e<sup>iπ</sup>","e<sup>iπ/2</sup>","e<sup>i0</sup>","e<sup>−iπ/2</sup>"], bonne:0, corr:"−1 = e<sup>iπ</sup>."},
+    {q:"Quelle est la forme exponentielle de 1 + i√3 ?", choix:["2 e<sup>iπ/6</sup>","2 e<sup>iπ/4</sup>","2 e<sup>iπ/3</sup>","2 e<sup>iπ/2</sup>"], bonne:2, corr:"|1 + i√3| = 2 et arg = π/3, donc 2 e<sup>iπ/3</sup>."},
+    {q:"Que vaut cos θ avec la formule d'Euler ?", choix:["(e<sup>iθ</sup> + e<sup>−iθ</sup>)/2","(e<sup>iθ</sup> − e<sup>−iθ</sup>)/2","(e<sup>iθ</sup> + e<sup>−iθ</sup>)/(2i)","e<sup>iθ</sup> · e<sup>−iθ</sup>"], bonne:0, corr:"Formule d'Euler : cos θ = (e<sup>iθ</sup> + e<sup>−iθ</sup>)/2."},
+    {q:"Que vaut sin θ avec la formule d'Euler ?", choix:["(e<sup>iθ</sup> + e<sup>−iθ</sup>)/2","(e<sup>iθ</sup> − e<sup>−iθ</sup>)/(2i)","(e<sup>iθ</sup> − e<sup>−iθ</sup>)/2","e<sup>iθ</sup> · e<sup>−iθ</sup>"], bonne:1, corr:"Formule d'Euler : sin θ = (e<sup>iθ</sup> − e<sup>−iθ</sup>)/(2i)."},
+    {q:"Que dit la formule de Moivre ?", choix:["(e<sup>iθ</sup>)ⁿ = e<sup>inθ</sup>","(e<sup>iθ</sup>)ⁿ = e<sup>iθ</sup>","(e<sup>iθ</sup>)ⁿ = n e<sup>iθ</sup>","(e<sup>iθ</sup>)ⁿ = e<sup>iθ/n</sup>"], bonne:0, corr:"Moivre : (e<sup>iθ</sup>)ⁿ = e<sup>inθ</sup>."},
+    {q:"Que vaut e<sup>iπ</sup> + 1 ?", choix:["0","1","−1","2"], bonne:0, corr:"Identité d'Euler : e<sup>iπ</sup> = −1, donc e<sup>iπ</sup> + 1 = 0."},
+    {q:"Que vaut |e<sup>iθ</sup>| ?", choix:["0","1","θ","e"], bonne:1, corr:"e<sup>iθ</sup> = cos θ + i sin θ, de module √(cos²θ + sin²θ) = 1."},
+    {q:"Que vaut 2 e<sup>iπ/2</sup> ?", choix:["2","2i","−2","−2i"], bonne:1, corr:"2 e<sup>iπ/2</sup> = 2(cos(π/2) + i sin(π/2)) = 2(0 + i) = 2i."},
+
+    // ----- Calculs algébriques (61-70)
+    {q:"Que vaut (2 + 3i) + (1 − i) ?", choix:["3 + 2i","3 + 4i","1 + 2i","3 − 2i"], bonne:0, corr:"(2+1) + (3−1)i = 3 + 2i."},
+    {q:"Que vaut (2 + 3i) − (1 − i) ?", choix:["1 + 2i","1 + 4i","3 + 2i","1 − 4i"], bonne:1, corr:"(2−1) + (3−(−1))i = 1 + 4i."},
+    {q:"Que vaut (1 + i)(1 − i) ?", choix:["0","1","2","2i"], bonne:2, corr:"1² − i² = 1 − (−1) = 2."},
+    {q:"Que vaut (2 + i)² ?", choix:["3 + 4i","5 + 4i","4 + 4i","3 + 2i"], bonne:0, corr:"(2+i)² = 4 + 4i + i² = 4 + 4i − 1 = 3 + 4i."},
+    {q:"Que vaut (1 + i)² ?", choix:["2","2i","1 + 2i","2 + 2i"], bonne:1, corr:"(1+i)² = 1 + 2i + i² = 2i."},
+    {q:"Que vaut (3 + 2i)(3 − 2i) ?", choix:["5","13","9","−13"], bonne:1, corr:"3² − (2i)² = 9 − (−4) = 13."},
+    {q:"Que vaut 1 / i ?", choix:["i","−i","1","−1"], bonne:1, corr:"1/i = (1 × (−i))/(i × (−i)) = −i / 1 = −i."},
+    {q:"Que vaut (1 + i) / (1 − i) ?", choix:["1","i","−i","−1"], bonne:1, corr:"On multiplie par (1+i) : (1+i)²/2 = 2i/2 = i."},
+    {q:"Que vaut (2 + i)(3 − i) ?", choix:["5 + i","6 − i","7 + i","7 − i"], bonne:2, corr:"6 − 2i + 3i − i² = 6 + i + 1 = 7 + i."},
+    {q:"Que vaut i + i² + i³ + i⁴ ?", choix:["0","i","1","4i"], bonne:0, corr:"i + (−1) + (−i) + 1 = 0."},
+
+    // ----- Équations du second degré (71-80)
+    {q:"Solutions de z² + 1 = 0 ?", choix:["1 et −1","i et −i","0","Aucune"], bonne:1, corr:"z² = −1, donc z = i ou z = −i."},
+    {q:"Solutions de z² + 4 = 0 ?", choix:["2 et −2","2i et −2i","4i et −4i","Aucune"], bonne:1, corr:"z² = −4, donc z = 2i ou z = −2i."},
+    {q:"Solutions de z² − 2z + 5 = 0 ?", choix:["1 ± 2i","2 ± i","1 ± 4i","−1 ± 2i"], bonne:0, corr:"Δ = 4 − 20 = −16. z = (2 ± 4i)/2 = 1 ± 2i."},
+    {q:"Solutions de z² + 2z + 2 = 0 ?", choix:["−1 ± i","1 ± i","−1 ± 2i","2 ± i"], bonne:0, corr:"Δ = 4 − 8 = −4. z = (−2 ± 2i)/2 = −1 ± i."},
+    {q:"Si Δ < 0, les solutions sont :", choix:["réelles","complexes conjuguées","imaginaires pures","égales"], bonne:1, corr:"Quand Δ < 0, les deux solutions complexes sont conjuguées."},
+    {q:"Que vaut Δ pour z² + 3z + 4 = 0 ?", choix:["−7","7","25","−25"], bonne:0, corr:"Δ = 9 − 16 = −7."},
+    {q:"Solutions de z² − 4z + 13 = 0 ?", choix:["2 ± 3i","4 ± 13i","2 ± 9i","−2 ± 3i"], bonne:0, corr:"Δ = 16 − 52 = −36. z = (4 ± 6i)/2 = 2 ± 3i."},
+    {q:"Solutions de z² + z + 1 = 0 ?", choix:["(−1 ± i√3)/2","(−1 ± √3)/2","1 ± i√3","(−1 ± i)/2"], bonne:0, corr:"Δ = 1 − 4 = −3. z = (−1 ± i√3)/2."},
+    {q:"Combien de solutions complexes une équation du 2nd degré admet-elle (au plus) ?", choix:["1","2","3","4"], bonne:1, corr:"Au plus 2 solutions distinctes (ou une double)."},
+    {q:"Si z₀ est solution d'une équation à coefficients réels, alors :", choix:["z̄₀ est aussi solution","−z₀ est aussi solution","1/z₀ est solution","i z₀ est solution"], bonne:0, corr:"Les solutions non réelles vont par paires conjuguées : z̄₀ est aussi solution."},
+
+    // ----- Géométrie (81-90)
+    {q:"Que représente |z − 1| = 2 ?", choix:["Un cercle","Une droite","Un point","Une ellipse"], bonne:0, corr:"Cercle de centre 1 (affixe) et de rayon 2."},
+    {q:"Que représente |z| = 3 ?", choix:["Un cercle de rayon 3","Une droite","Un carré","Un point"], bonne:0, corr:"Cercle centré à l'origine, de rayon 3."},
+    {q:"Que représente |z − z'| ?", choix:["Une distance","Un angle","Un module de somme","Un produit"], bonne:0, corr:"C'est la distance entre les points d'affixes z et z'."},
+    {q:"Que représente Re(z) = 2 ?", choix:["Droite verticale","Droite horizontale","Cercle","Point"], bonne:0, corr:"Les points d'abscisse 2 : droite verticale x = 2."},
+    {q:"Que représente Im(z) = 1 ?", choix:["Droite horizontale","Droite verticale","Cercle","Point"], bonne:0, corr:"Les points d'ordonnée 1 : droite horizontale y = 1."},
+    {q:"Quelle est l'image de z = 2 + 3i ?", choix:["(2 ; 3)","(3 ; 2)","(−2 ; 3)","(2 ; −3)"], bonne:0, corr:"Point M(a ; b) = (2 ; 3)."},
+    {q:"Quel complexe a pour image le point (1 ; −2) ?", choix:["1 − 2i","1 + 2i","−1 − 2i","2 − i"], bonne:0, corr:"Affixe = 1 + (−2)i = 1 − 2i."},
+    {q:"Que représente |z − i| = |z + i| ?", choix:["L'axe des réels","L'axe des imaginaires","Un cercle","Un point"], bonne:0, corr:"Points équidistants de i et −i : médiatrice = axe des réels."},
+    {q:"Que représente arg(z) = π/2 ?", choix:["Demi-droite des imaginaires purs positifs","L'axe des réels","Un cercle","Le point i"], bonne:0, corr:"Les z d'argument π/2 sont les imaginaires purs positifs."},
+    {q:"Que représente |z − 1 + i| = 1 ?", choix:["Cercle de centre (1 ; −1), rayon 1","Cercle de centre (−1 ; 1), rayon 1","Cercle de centre (1 ; 1), rayon 1","Droite"], bonne:0, corr:"|z − (1 − i)| = 1 : cercle de centre 1 − i et rayon 1."},
+
+    // ----- Propriétés et identités (91-100)
+    {q:"z + z' = 0 ⟺ ?", choix:["z' = −z","z' = z","z' = z̄","z' = 0"], bonne:0, corr:"z + z' = 0 ⟺ z' = −z."},
+    {q:"z · z' = 0 ⟺ ?", choix:["z = 0 ou z' = 0","z = z' = 0","z = −z'","z = z̄'"], bonne:0, corr:"Un produit est nul si et seulement si l'un des facteurs est nul."},
+    {q:"|z| = 0 ⟺ ?", choix:["z = 0","z = i","z = 1","z = −1"], bonne:0, corr:"|z| = 0 ⟺ z = 0."},
+    {q:"z est réel si et seulement si :", choix:["Im(z) = 0","Re(z) = 0","|z| = 1","arg(z) = π/2"], bonne:0, corr:"Un complexe est réel ssi sa partie imaginaire est nulle."},
+    {q:"z est imaginaire pur si et seulement si :", choix:["Re(z) = 0","Im(z) = 0","|z| = 1","z = 1"], bonne:0, corr:"Un complexe est imaginaire pur ssi sa partie réelle est nulle."},
+    {q:"Que vaut le conjugué du conjugué de z ?", choix:["z","−z","z̄","0"], bonne:0, corr:"<span style='text-decoration:overline'>z̄</span> = z."},
+    {q:"Que vaut |z̄| ?", choix:["|z|","−|z|","|z|²","1/|z|"], bonne:0, corr:"Le conjugué a le même module : |z̄| = |z|."},
+    {q:"Que vaut arg(z̄) ?", choix:["−arg(z)","arg(z)","arg(z) + π","π/2"], bonne:0, corr:"Le conjugué change le signe de l'argument : arg(z̄) = −arg(z) [2π]."},
+    {q:"Que vaut 1 / z̄ ?", choix:["z / |z|²","z̄ / |z|²","z̄ · |z|²","1 / z"], bonne:0, corr:"1/z̄ = z / (z · z̄) = z / |z|²."},
+    {q:"z² est réel si et seulement si :", choix:["z réel ou imaginaire pur","z = 0","z = 1","z = i"], bonne:0, corr:"z² réel ⟺ z réel ou z imaginaire pur."}
+  ];
+
+  /* ============================================================
+     ÉTAT DU QCM
+     ============================================================ */
+  var qcmState = { questions: [], index: 0, reponses: [], actif: false };
+
+  /* Mélange de Fisher-Yates */
+  function melanger(arr){
+    for (var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  /* Démarrage du QCM */
+  function qcmDemarrer(){
+    var input = document.getElementById('qcm-nb');
+    var nb = parseInt(input.value, 10);
+    if (isNaN(nb) || nb < 1) nb = 1;
+    if (nb > 25) nb = 25;
+    if (nb > QCM_POOL.length) nb = QCM_POOL.length;
+
+    var indices = [];
+    for (var k = 0; k < QCM_POOL.length; k++) indices.push(k);
+    melanger(indices);
+    var selection = indices.slice(0, nb);
+
+    qcmState.questions = selection.map(function(i){ return QCM_POOL[i]; });
+    qcmState.index = 0;
+    qcmState.reponses = [];
+    qcmState.actif = true;
+
+    document.getElementById('qcm-setup').style.display = 'none';
+    document.getElementById('qcm-finish').style.display = 'none';
+    document.getElementById('qcm-run').style.display = 'block';
+    qcmAfficher();
+  }
+
+  /* Affichage de la question courante */
+  function qcmAfficher(){
+    var q = qcmState.questions[qcmState.index];
+    var total = qcmState.questions.length;
+    var num = qcmState.index + 1;
+
+    document.getElementById('qcm-progress').textContent = 'Question ' + num + ' / ' + total;
+    document.getElementById('qcm-bar-fill').style.width = ((num - 1) / total * 100) + '%';
+
+    document.getElementById('qcm-enonce').textContent = q.q;
+
+    var zone = document.getElementById('qcm-choix');
+    zone.innerHTML = '';
+    q.choix.forEach(function(txt, j){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = txt;
+      b.setAttribute('data-index', j);
+      b.addEventListener('click', function(){ qcmRepondre(j); });
+      zone.appendChild(b);
+    });
+
+    var corr = document.getElementById('qcm-correction');
+    corr.className = 'corr';
+    corr.innerHTML = '';
+
+    var btn = document.getElementById('qcm-next');
+    btn.style.display = 'none';
+    btn.textContent = (qcmState.index === total - 1) ? 'Voir mon score' : 'Question suivante';
+  }
+
+  /* Réponse à la question courante */
+  function qcmRepondre(choixIdx){
+    if (!qcmState.actif) return;
+    if (qcmState.reponses[qcmState.index] !== undefined) return;
+
+    var q = qcmState.questions[qcmState.index];
+    qcmState.reponses[qcmState.index] = choixIdx;
+
+    var boutons = document.querySelectorAll('#qcm-choix button');
+    boutons.forEach(function(b, j){
+      b.disabled = true;
+      if (j === q.bonne) b.classList.add('ok');
+      else if (j === choixIdx) b.classList.add('ko');
+    });
+
+    var corr = document.getElementById('qcm-correction');
+    var bon = (choixIdx === q.bonne);
+    corr.className = 'corr show ' + (bon ? 'bonne' : 'mauvaise');
+    corr.innerHTML = '<span class="titre">' +
+      (bon ? '✅ Bonne réponse' : '❌ Incorrect — la bonne réponse est : ' + q.choix[q.bonne]) +
+      '</span>' + q.corr;
+
+    document.getElementById('qcm-next').style.display = 'inline-block';
+  }
+
+  /* Passage à la question suivante ou fin */
+  function qcmSuivant(){
+    if (qcmState.index < qcmState.questions.length - 1){
+      qcmState.index++;
+      qcmAfficher();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } else {
+      qcmTerminer();
+    }
+  }
+
+  /* Fin du QCM */
+  function qcmTerminer(){
+    qcmState.actif = false;
+    var score = 0;
+    qcmState.reponses.forEach(function(r, i){
+      if (r === qcmState.questions[i].bonne) score++;
+    });
+    var total = qcmState.questions.length;
+    var pct = score / total;
+
+    document.getElementById('qcm-run').style.display = 'none';
+    var fin = document.getElementById('qcm-finish');
+    fin.style.display = 'block';
+    document.getElementById('qcm-score').textContent = score + ' / ' + total;
+
+    var ico = document.getElementById('qcm-finish-ico');
+    var msg;
+    if (pct === 1){ ico.textContent = '🏆'; msg = 'Parfait ! Tu maîtrises les nombres complexes.'; }
+    else if (pct >= 0.8){ ico.textContent = '🌟'; msg = 'Excellent travail !'; }
+    else if (pct >= 0.6){ ico.textContent = '👍'; msg = 'Bien joué, continue comme ça.'; }
+    else if (pct >= 0.4){ ico.textContent = '💪'; msg = 'Pas mal, relis le cours et retente.'; }
+    else { ico.textContent = '📖'; msg = 'Courage ! Reprends le cours tranquillement.'; }
+    document.getElementById('qcm-msg').textContent = msg;
+
+    envoyerResultat(score, total);
+  }
+
+  /* Communication avec le site hôte (norme 5.1 / 13.2) */
+  function envoyerResultat(score, total){
+    var detail = qcmState.reponses.map(function(r, i){
+      return {
+        question: i + 1,
+        choix: r,
+        bonne: qcmState.questions[i].bonne,
+        correct: r === qcmState.questions[i].bonne
+      };
+    });
+    var payload = {
+      type: 'CHAPTER_RESULT',
+      chapterId: document.body.getAttribute('data-chapter-id'),
+      chapterTitle: document.body.getAttribute('data-chapter-title'),
+      score: score,
+      total: total,
+      detail: detail,
+      date: new Date().toISOString()
+    };
+    try {
+      if (window.parent && window.parent !== window){
+        window.parent.postMessage(payload, '*');
+      }
+    } catch(e){}
+    try {
+      window.dispatchEvent(new CustomEvent('chapterResult', { detail: payload }));
+    } catch(e){}
+  }
+
+  /* ============================================================
+     NAVIGATION PAR ONGLETS
+     ============================================================ */
+  document.querySelectorAll('.tab-bar button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-tab');
+      document.querySelectorAll('.tab-bar button').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + target).classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  });
+
+  /* ============================================================
+     QCM — ÉCOUTEURS
+     ============================================================ */
+  document.getElementById('qcm-start').addEventListener('click', qcmDemarrer);
+  document.getElementById('qcm-next').addEventListener('click', qcmSuivant);
+  document.getElementById('qcm-restart').addEventListener('click', function(){
+    document.getElementById('qcm-finish').style.display = 'none';
+    document.getElementById('qcm-setup').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+
+  /* ============================================================
+     TEXTE À TROUS — correction robuste
+     Normalisation : minuscules, suppression espaces/parenthèses/crochets,
+     remplacement de ² par ^2, virgule par point.
+     ============================================================ */
+  function normaliser(s){
+    return String(s)
+      .toLowerCase()
+      .replace(/\s+/g, '')
+      .replace(/[()\[\]{}]/g, '')
+      .replace(/²/g, '^2')
+      .replace(/[−–—]/g, '-')
+      .replace(/,/g, '.');
+  }
+
+  var btnTrous = document.getElementById('verif-trous');
+  if (btnTrous){
+    btnTrous.addEventListener('click', function(){
+      var inputs = document.querySelectorAll('#panel-trous input[data-rep]');
+      var ok = 0, totalT = inputs.length;
+
+      inputs.forEach(function(inp){
+        var val = normaliser(inp.value);
+        var accepts = inp.getAttribute('data-rep').split('|').map(normaliser);
+        var bon = accepts.indexOf(val) !== -1;
+        inp.classList.remove('ok','ko');
+        inp.classList.add(bon ? 'ok' : 'ko');
+        if (bon) ok++;
+      });
+
+      var res = document.getElementById('res-trous');
+      res.textContent = ok + ' / ' + totalT + ' bonnes réponses';
+      res.style.color = (ok === totalT) ? 'var(--vert)' : (ok >= totalT / 2 ? 'var(--or)' : 'var(--rouge)');
+    });
+  }
+
+  /* ============================================================
+     EXERCICES DST — affichage du corrigé (7.3)
+     ============================================================ */
+  document.querySelectorAll('.btn-corr').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var cible = document.getElementById(btn.getAttribute('data-cible'));
+      if (!cible) return;
+      var visible = cible.classList.toggle('show');
+      btn.textContent = visible ? 'Masquer la correction' : 'Afficher la correction';
+    });
+  });
+
+  /* ============================================================
+     FILIGRANE (10.3)
+     ============================================================ */
+  function setWatermark(txt){
+    var wm = document.getElementById('watermark');
+    if (!wm) return;
+    wm.innerHTML = '';
+    if (!txt) return;
+    for (var i = 0; i < 24; i++){
+      var s = document.createElement('span');
+      s.textContent = txt;
+      wm.appendChild(s);
+    }
+  }
+  window.setWatermark = setWatermark;
+
+  /* ============================================================
+     PROTECTION LÉGÈRE (10.3)
+     ============================================================ */
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('selectstart', function(e){
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+  });
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+  /* ============================================================
+     MODE DÉMO (20.2)
+     ============================================================ */
+  if (document.body.classList.contains('demo')) setWatermark('DÉMO');
+
+})();
+</script>
+</body>
+</html>
